@@ -5,3 +5,9 @@ body {
   margin: 0;
   color: #fff;
 }
+
+.main-title {
+  text-align: center;
+  margin: 0;
+  text-shadow: white 0 0 10px;
+}
