@@ -13,3 +13,7 @@
 .show-details .content-description {
   margin: 1rem 0;
 }
+
+.show-details .hero img {
+  width: 375px;
+}

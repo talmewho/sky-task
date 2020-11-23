@@ -74,7 +74,7 @@ type Language =  {
   name: string
 };
 
-export type TheMovieDBCastCredit = {
+export type TheMovieDBShowCastCredit = {
   adult: boolean,
   gender: number,
   id: number,
@@ -86,6 +86,10 @@ export type TheMovieDBCastCredit = {
   character: string,
   credit_id: string,
   order: number
+};
+
+export type TheMovieDBMovieCastCredit = TheMovieDBShowCastCredit & {
+  cast_id: number
 };
 
 export type TheMovieDBCrewCredit = {
@@ -102,8 +106,13 @@ export type TheMovieDBCrewCredit = {
   job: string
 };
 
-export type TheMovieDBCredits = {
-  cast: TheMovieDBCastCredit[],
+export type TheMovieDBShowCredits = {
+  cast: TheMovieDBShowCastCredit[],
+  crew: TheMovieDBCrewCredit[]
+};
+
+export type TheMovieDBMovieCredits = {
+  cast: TheMovieDBMovieCastCredit[],
   crew: TheMovieDBCrewCredit[]
 };
 
@@ -141,7 +150,7 @@ export type TheMovieDBShow = {
 };
 
 export type TheMovieDBShowAndCredits = TheMovieDBShow & {
-  credits: TheMovieDBCredits
+  credits: TheMovieDBShowCredits
 };
 
 export type TheMovieDBMovie = {
@@ -173,5 +182,72 @@ export type TheMovieDBMovie = {
 }
 
 export type TheMovieDBMovieAndCredits = TheMovieDBMovie & {
-  credits: TheMovieDBCredits
+  credits: TheMovieDBMovieCredits
+};
+
+export type TheMovieDBCast = {
+  birthday: string,
+  known_for_department: string,
+  deathday: string | null,
+  id: number,
+  name: string,
+  also_known_as: string[]
+  gender: number,
+  biography: string,
+  popularity: number,
+  place_of_birth: string,
+  profile_path: string,
+  adult: boolean,
+  imdb_id: string
+  homepage: string | null
+};
+
+export type TheMovieDBCastContentCredit = TheMovieDBShowCastCredit & {
+  media_type: 'tv' | 'movie'
+};
+
+type TheMovieDBCrewContentCredit = TheMovieDBCrewCredit & {
+  media_type: 'tv' | 'movie'
+};
+
+
+type TheMovieDBCastContentCreditBase = {
+  id: number,
+  original_language: string,
+  overview: string,
+  origin_country: string[],
+  genre_ids: number[],
+  poster_path: string,
+  vote_average: number,
+  vote_count: number,
+  character: string,
+  backdrop_path: string,
+  popularity: number,
+  credit_id: string
+};
+
+export type TheMovieDBCastShowCredit = TheMovieDBCastContentCreditBase & {
+  episode_count: number,
+  original_name: string,
+  name: string,
+  media_type: "tv",
+  first_air_date: string
+};
+
+export type TheMovieDBCastMovieCredit = TheMovieDBCastContentCreditBase & {
+  media_type: "movie",
+  original_title: string,
+  video: boolean,
+  release_date: string,
+  title: string,
+  adult: boolean
+};
+
+export type TheMovieDBCastContentCredits = {
+  cast: (TheMovieDBCastMovieCredit | TheMovieDBCastShowCredit)[],
+  crew: TheMovieDBCastMovieCredit[]
+};
+
+export type TheMovieDBCastAndCredits = TheMovieDBCast & {
+  combined_credits: TheMovieDBCastContentCredits
 };

@@ -44,11 +44,13 @@ const Movie: React.FC = () => {
     );
   }
 
+  const year = movie.year ? ` (${movie.year})` : '';
+
   return (
     <article className="movie-details">
       <figure className="hero"><img src={movie.imageURL} alt={movie.name} /></figure>
       <section className="details">
-        <h1 className="content-title">{movie.name} ({movie.year})</h1>
+        <h1 className="content-title">{movie.name}{year}</h1>
         <div className="content-description">{movie.overview}</div>
         {cast}
       </section>

@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Show from './routes/Show';
 import Movie from './routes/Movie';
+import Cast from './routes/Cast';
 
 import './App.css';
 
@@ -17,7 +18,7 @@ export const App: React.FC = () => {
           <Switch>
             <Route path="/tv/:id"><Show /></Route>
             <Route path="/movie/:id"><Movie /></Route>
-            <Route path="/cast/:id"></Route>
+            <Route path="/cast/:id"><Cast /></Route>
             <Route path="/search-results"></Route>
           </Switch>
         </Router>

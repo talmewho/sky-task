@@ -44,11 +44,13 @@ const Show: React.FC = () => {
     );
   }
 
+  const year = show.year ? ` (${show.year})` : '';
+
   return (
     <article className="show-details">
       <figure className="hero"><img src={show.imageURL} alt={show.name} /></figure>
       <section className="details">
-        <h1 className="content-title">{show.name} ({show.year}) (Show)</h1>
+        <h1 className="content-title">{show.name}{year} (Show)</h1>
         <div className="content-description">{show.overview}</div>
         {cast}
       </section>

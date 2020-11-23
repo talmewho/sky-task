@@ -1,0 +1,15 @@
+.cast-details {
+  display: flex;
+}
+
+.cast-details .hero {
+  margin: 0 1rem;
+}
+
+.cast-details .content-title {
+  margin-top: 0;
+}
+
+.cast-details .content-description {
+  margin: 1rem 0;
+}

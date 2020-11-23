@@ -1,8 +1,12 @@
 import {
   TheMovieDBShowAndCredits,
   TheMovieDBMovieAndCredits,
+  TheMovieDBShowCredits,
+  TheMovieDBMovieCredits,
   TheMovieDBConfiguration,
-  TheMovieDBImageConfiguration
+  TheMovieDBCastContentCredits,
+  TheMovieDBImageConfiguration,
+  TheMovieDBCastAndCredits
 } from './TheMovieDB.types';
 import {FetcherOptions} from './DataFetcher.types';
 
@@ -30,23 +34,32 @@ export default class TheMovieDbService extends DataFetcher {
     return await this.configurationPromise;
   }
 
-  async getShow<TheMovieDBShowAndCredits>(id: string): Promise<TheMovieDBShowAndCredits> {
-    return this.get(`/3/tv/${id}`, {parameters: {append_to_response: 'credits'}});
+  async getShow(id: string): Promise<TheMovieDBShowAndCredits> {
+    return this.get<TheMovieDBShowAndCredits>(`/3/tv/${id}`, {parameters: {append_to_response: 'credits'}});
   }
 
-  async getShowCredits<TheMovieDBCredits>(id: string): Promise<TheMovieDBCredits> {
-    return this.get(`/3/tv/${id}/credits`);
+  async getShowCredits(id: string): Promise<TheMovieDBShowCredits> {
+    return this.get<TheMovieDBShowCredits>(`/3/tv/${id}/credits`);
   }
 
-  async getMovie<TheMovieDBMovieAndCredits>(id: string): Promise<TheMovieDBMovieAndCredits> {
-    return this.get(`/3/movie/${id}`, {parameters: {append_to_response: 'credits'}});
+  async getMovie(id: string): Promise<TheMovieDBMovieAndCredits> {
+    return this.get<TheMovieDBMovieAndCredits>(`/3/movie/${id}`, {parameters: {append_to_response: 'credits'}});
   }
 
-  async getMovieCredits<TheMovieDBCredits>(id: string): Promise<TheMovieDBCredits> {
-    return this.get(`/3/movie/${id}/credits`);
+  async getMovieCredits(id: string): Promise<TheMovieDBMovieCredits> {
+    return this.get<TheMovieDBMovieCredits>(`/3/movie/${id}/credits`);
   }
 
-  async getImageURL(relativeImageURL: string, type: keyof TheMovieDBImageConfiguration, size: string) {
+  async getCast(id: string): Promise<TheMovieDBCastAndCredits> {
+    return this.get<TheMovieDBCastAndCredits>(`/3/person/${id}`, {parameters: {append_to_response: 'combined_credits'}});
+  }
+
+  async getCastCredits(id: string): Promise<TheMovieDBCastContentCredits> {
+    return this.get<TheMovieDBCastContentCredits>(`/3/person/${id}/combined_credits`);
+  }
+
+  async getImageURL(
+    relativeImageURL: string, type: keyof TheMovieDBImageConfiguration, size: string): Promise<string> {
     const configuration = await this.getConfiguration();
     if (!configuration.images[type].includes(size)) {
       throw new Error("Invalid image size");

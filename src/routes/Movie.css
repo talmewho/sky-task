@@ -13,3 +13,7 @@
 .movie-details .content-description {
   margin: 1rem 0;
 }
+
+.movie-details .hero img {
+  width: 375px;
+}
