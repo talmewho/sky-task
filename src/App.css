@@ -1,13 +1,33 @@
 body {
   font-family: 'Arial', sans-serif;
   background: linear-gradient(#00f, #000);
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
+  padding: 5px;
   color: #fff;
+  box-sizing: border-box;
 }
 
 .main-title {
-  text-align: center;
   margin: 0;
+  padding: 1rem;
   text-shadow: white 0 0 10px;
+  position: absolute;
+  top: 1rem;
+}
+
+.main-title .logo {
+  height: 100px;
+}
+
+a {
+  color: pink;
+}
+
+main {
+  box-shadow: 0 0 60px 10px black;
+  margin: 100px auto 0;
+  padding: 5rem 8rem;
+  width: 780px;
+  border-radius: 100px;
 }

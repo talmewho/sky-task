@@ -1,0 +1,15 @@
+.show-details {
+  display: flex;
+}
+
+.show-details .hero {
+  margin: 0 1rem;
+}
+
+.show-details .content-title {
+  margin-top: 0;
+}
+
+.show-details .content-description {
+  margin: 1rem 0;
+}
