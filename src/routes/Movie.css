@@ -1,0 +1,15 @@
+.movie-details {
+  display: flex;
+}
+
+.movie-details .hero {
+  margin: 0 1rem;
+}
+
+.movie-details .content-title {
+  margin-top: 0;
+}
+
+.movie-details .content-description {
+  margin: 1rem 0;
+}

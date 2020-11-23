@@ -5,25 +5,25 @@ import {Content} from '../service/the-movie-db/types';
 
 import {fetcher} from '../service/the-movie-db';
 
-import './Show.css';
+import './Movie.css';
 
-const Show: React.FC = () => {
+const Movie: React.FC = () => {
   const {id} = useParams();
-  const [show, setShow] = useState<Content>();
+  const [movie, setMovie] = useState<Content>();
 
   useEffect(() => {
     (async () => {
-      setShow(await fetcher.getShow({showID: id, posterImageSize: 'w342'}));
+      setMovie(await fetcher.getMovie({movieID: id, posterImageSize: 'w342'}));
     })();
   }, [id]);
 
-  if (!show) {
+  if (!movie) {
     return (<div>Loading...</div>);
   }
 
   let cast: React.ReactNode;
-  if (show.cast.length) {
-    const names = show.cast.map(({id, name}, index, array) => {
+  if (movie.cast.length) {
+    const names = movie.cast.map(({id, name}, index, array) => {
       const comma: string =
         index === array.length - 2 ?
           ' and ' :
@@ -45,15 +45,15 @@ const Show: React.FC = () => {
   }
 
   return (
-    <article className="show-details">
-      <figure className="hero"><img src={show.imageURL} alt={show.name} /></figure>
+    <article className="movie-details">
+      <figure className="hero"><img src={movie.imageURL} alt={movie.name} /></figure>
       <section className="details">
-        <h1 className="content-title">{show.name} ({show.year}) (Show)</h1>
-        <div className="content-description">{show.overview}</div>
+        <h1 className="content-title">{movie.name} ({movie.year})</h1>
+        <div className="content-description">{movie.overview}</div>
         {cast}
       </section>
     </article>
   );
 };
 
-export default Show;
+export default Movie;

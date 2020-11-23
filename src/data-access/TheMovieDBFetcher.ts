@@ -1,4 +1,9 @@
-import {TheMovieDBShow, TheMovieDBConfiguration, TheMovieDBImageConfiguration} from './TheMovieDB.types';
+import {
+  TheMovieDBShowAndCredits,
+  TheMovieDBMovieAndCredits,
+  TheMovieDBConfiguration,
+  TheMovieDBImageConfiguration
+} from './TheMovieDB.types';
 import {FetcherOptions} from './DataFetcher.types';
 
 import DataFetcher from './DataFetcher';
@@ -25,12 +30,20 @@ export default class TheMovieDbService extends DataFetcher {
     return await this.configurationPromise;
   }
 
-  async getShow<TheMovieDBShow>(id: string): Promise<TheMovieDBShow> {
-    return this.get(`/3/tv/${id}`);
+  async getShow<TheMovieDBShowAndCredits>(id: string): Promise<TheMovieDBShowAndCredits> {
+    return this.get(`/3/tv/${id}`, {parameters: {append_to_response: 'credits'}});
   }
 
   async getShowCredits<TheMovieDBCredits>(id: string): Promise<TheMovieDBCredits> {
     return this.get(`/3/tv/${id}/credits`);
+  }
+
+  async getMovie<TheMovieDBMovieAndCredits>(id: string): Promise<TheMovieDBMovieAndCredits> {
+    return this.get(`/3/movie/${id}`, {parameters: {append_to_response: 'credits'}});
+  }
+
+  async getMovieCredits<TheMovieDBCredits>(id: string): Promise<TheMovieDBCredits> {
+    return this.get(`/3/movie/${id}/credits`);
   }
 
   async getImageURL(relativeImageURL: string, type: keyof TheMovieDBImageConfiguration, size: string) {
