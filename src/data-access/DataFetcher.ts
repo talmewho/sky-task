@@ -1,10 +1,6 @@
-import configuration from "../configuration";
-import FetcherError from "./FetcherError";
-
-interface FetcherOptions extends RequestInit {
-  baseURL?: string,
-  parameters?: Record<string, string>
-}
+import configuration from '../configuration';
+import FetcherError from './FetcherError';
+import {FetcherOptions} from './DataFetcher.types';
 
 export default class DataFetcher {
   baseURL: string = '';
@@ -39,7 +35,7 @@ export default class DataFetcher {
     try {
       responseText = await response.text();
     } catch (e) {
-      responseText = "";
+      responseText = '';
     }
     const error = new FetcherError(`Could not fetch ${fullURL}`, { status: response.status, responseText });
     throw error;
