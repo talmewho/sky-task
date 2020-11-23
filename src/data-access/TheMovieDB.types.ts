@@ -1,3 +1,18 @@
+export type TheMovieDBImageConfiguration = {
+    base_url: string,
+    secure_base_url: string,
+    backdrop_sizes: string[],
+    logo_sizes: string[],
+    poster_sizes: string[],
+    profile_sizes: string[],
+    still_sizes: string[]
+};
+
+export type TheMovieDBConfiguration = {
+  images: TheMovieDBImageConfiguration,
+  change_keys: string[]
+};
+
 type Network = {
   name: string,
   id: number,
@@ -11,7 +26,7 @@ type Creator = {
   name: string,
   gender: number,
   profile_path: string
-}
+};
 
 type Genre = {
   id: number,
