@@ -27,7 +27,7 @@ const Cast: React.FC = () => {
       const yearLabel = year ? ` (${year})` : '';
       const typeLabel = type === 'tv' ? ' (Show)' : undefined;
       return (
-        <li>
+        <li key={id}>
           <Link to={`/${type}/${id}`}>{name}</Link>{yearLabel}{typeLabel}
         </li>
       );

@@ -1,10 +1,14 @@
-import {Content, Cast} from './types';
+import {Content, Cast, SearchResult, SearchResults} from './types';
 import {
   TheMovieDBCastShowCredit,
   TheMovieDBCastMovieCredit,
   TheMovieDBShowCastCredit,
   TheMovieDBMovieCastCredit,
-  TheMovieDBCastAndCredits
+  TheMovieDBCastAndCredits,
+  TheMovieDBShowSearchResult,
+  TheMovieDBMovieSearchResult,
+  TheMovieDBCastSearchResult,
+  TheMovieDBSearchResult
 } from '../../data-access/TheMovieDB.types';
 
 import configuration from '../../configuration';
@@ -18,19 +22,40 @@ type GetShowOptions = {
   showID: string,
   fetcher?: TheMovieDBFetcher,
   posterImageSize: string
-}
+};
 
 type GetMovieOptions = {
   movieID: string,
   fetcher?: TheMovieDBFetcher,
   posterImageSize: string
-}
+};
 
 type GetCastOptions = {
   castID: string,
   fetcher?: TheMovieDBFetcher,
   profileImageSize: string
-}
+};
+
+type SearchOptions = {
+  query: string,
+  page: number,
+  fetcher?: TheMovieDBFetcher,
+  profileImageSize: string,
+  posterImageSize: string
+};
+
+
+const getImageURL =
+  async (
+    relativeURL: string | null,
+    type: 'poster_sizes' | 'profile_sizes',
+    size: string,
+    fallbackURL: string,
+    fetcher: TheMovieDBFetcher) => {
+  return relativeURL ?
+           await fetcher.getImageURL(relativeURL, type, size) :
+           fallbackURL;
+};
 
 export const getShow =
   async ({showID, posterImageSize, fetcher = defaultFetcher}: GetShowOptions): Promise<Content> => {
@@ -40,9 +65,14 @@ export const getShow =
   const year = release_date ? new Date(release_date).getFullYear() : 0;
 
   const imageURL =
-    poster_path ?
-      await fetcher.getImageURL(poster_path, 'poster_sizes', posterImageSize) :
-      configuration.defaultContentImageURL;
+    await getImageURL(
+      poster_path,
+      'poster_sizes',
+      posterImageSize,
+      configuration.defaultContentImageURL,
+      fetcher
+    );
+
 
   return {
     id,
@@ -62,9 +92,13 @@ export const getMovie =
   const year = release_date ? new Date(release_date).getUTCFullYear() : 0;
 
   const imageURL =
-    poster_path ?
-      await fetcher.getImageURL(poster_path, 'poster_sizes', posterImageSize) :
-      configuration.defaultContentImageURL;
+    await getImageURL(
+      poster_path,
+      'poster_sizes',
+      posterImageSize,
+      configuration.defaultContentImageURL,
+      fetcher
+    );
 
   return {
     id,
@@ -88,9 +122,13 @@ export const getCast =
     ).getUTCFullYear() - 1970;
 
   const imageURL =
-    profile_path ?
-      await fetcher.getImageURL(profile_path, 'profile_sizes', profileImageSize) :
-      configuration.defaultCastImageURL;
+    await getImageURL(
+      profile_path,
+      'profile_sizes',
+      profileImageSize,
+      configuration.defaultCastImageURL,
+      fetcher
+    );
 
   const contents = cast.map((credit: TheMovieDBCastShowCredit | TheMovieDBCastMovieCredit) => {
     let name: string;
@@ -123,4 +161,77 @@ export const getCast =
     biography,
     contents
   };
+};
+
+const getKnownFor = (
+  rawResults: TheMovieDBSearchResult[],
+  posterImageSize: string,
+  profileImageSize: string,
+  fetcher: TheMovieDBFetcher
+): Promise<SearchResult>[] => {
+  return rawResults.map<Promise<SearchResult>>(async (item: TheMovieDBSearchResult): Promise<SearchResult> => {
+      let name;
+      let knownFor: string[] | undefined = undefined;
+      let imageURL: string;
+      if (item.media_type === 'tv') {
+        const show = item as TheMovieDBShowSearchResult;
+        name = show.name;
+        imageURL =
+          await getImageURL(
+            show.poster_path,
+            'poster_sizes',
+            posterImageSize,
+            configuration.defaultContentImageURL,
+            fetcher
+          );
+      } else if (item.media_type === 'movie') {
+        const movie = item as TheMovieDBMovieSearchResult;
+        name = movie.title;
+        imageURL =
+          await getImageURL(
+            movie.poster_path,
+            'poster_sizes',
+            posterImageSize,
+            configuration.defaultContentImageURL,
+            fetcher
+          );
+      } else {
+        const cast = item as TheMovieDBCastSearchResult;
+        name = cast.name;
+        imageURL =
+          await getImageURL(
+            cast.profile_path,
+            'profile_sizes',
+            profileImageSize,
+            configuration.defaultCastImageURL,
+            fetcher
+          );
+
+        knownFor = cast.known_for.slice(0, 3).map(content => {
+          return (content as TheMovieDBShowSearchResult).name ||
+                 (content as TheMovieDBMovieSearchResult).title;
+        });
+      }
+      return {name, id: item.id, type: item.media_type, knownFor, imageURL};
+  });
+};
+
+export const search =
+  async ({
+    query,
+    page,
+    posterImageSize,
+    profileImageSize,
+    fetcher = defaultFetcher
+  }: SearchOptions): Promise<SearchResults> => {
+    const {
+      results: rawResults,
+      total_results: totalCount,
+      total_pages: totalPageCount,
+      page: outputPage
+    } = await fetcher.search(query, page);
+
+    const results: SearchResult[] =
+      await Promise.all(getKnownFor(rawResults, posterImageSize, profileImageSize, fetcher));
+    return {results, totalCount, page: outputPage, totalPageCount};
 };

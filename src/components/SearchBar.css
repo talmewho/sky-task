@@ -1,0 +1,39 @@
+.search-form {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-form .submit {
+  visibility: hidden;
+  width: 1px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.search-field {
+  pointer-events: auto;
+  transition: all 500ms;
+  width: 10%;
+  height: 3rem;
+  border-radius: 20px;
+  background: url("/search.svg") left center no-repeat #20f;
+  padding-left: 2.5rem;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  font-size: 2.5rem;
+  color: pink;
+}
+
+.search-field:focus {
+  outline: 1px solid #444;
+}
+
+.search-field:focus,
+.search-field:hover {
+  background-color: #24f;
+  width: 50%;
+}
+
+.search-field::placeholder {
+  color: #8884;
+}

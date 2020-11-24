@@ -6,6 +6,7 @@ import {
   TheMovieDBConfiguration,
   TheMovieDBCastContentCredits,
   TheMovieDBImageConfiguration,
+  TheMovieDBSearchResults,
   TheMovieDBCastAndCredits
 } from './TheMovieDB.types';
 import {FetcherOptions} from './DataFetcher.types';
@@ -56,6 +57,10 @@ export default class TheMovieDbService extends DataFetcher {
 
   async getCastCredits(id: string): Promise<TheMovieDBCastContentCredits> {
     return this.get<TheMovieDBCastContentCredits>(`/3/person/${id}/combined_credits`);
+  }
+
+  async search(query: string, page: number): Promise<TheMovieDBSearchResults> {
+    return this.get<TheMovieDBSearchResults>('/3/search/multi', {parameters: {query, page: String(page)}});
   }
 
   async getImageURL(

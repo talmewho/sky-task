@@ -1,0 +1,32 @@
+.search-result {
+  border-radius: 20px;
+  background: #06f;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  width: 25%;
+}
+.search-result a {
+  display: flex;
+  overflow-wrap: anywhere;
+}
+
+.search-result.movie img,
+.search-result.tv img {
+  width: 92px;
+  flex: 0 0 auto;
+}
+
+.search-result.person img {
+  width: 45px;
+  flex: 0 0 auto;
+}
+
+.search-result figure {
+  margin: 0 1rem;
+}
+
+.search-result.person figure {
+  width: 92px;
+  display: flex;
+  justify-content: center;
+}

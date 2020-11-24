@@ -6,18 +6,7 @@ body {
   padding: 5px;
   color: #fff;
   box-sizing: border-box;
-}
-
-.main-title {
-  margin: 0;
-  padding: 1rem;
-  text-shadow: white 0 0 10px;
-  position: absolute;
-  top: 1rem;
-}
-
-.main-title .logo {
-  height: 100px;
+  overflow-anchor: none;
 }
 
 a {

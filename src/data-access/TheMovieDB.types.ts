@@ -124,7 +124,7 @@ export type TheMovieDBShow = {
   genres: Genre[],
   homepage: string,
   id: number,
-  in_production: false,
+  in_production: boolean,
   languages: string[],
   last_air_date: string,
   last_episode_to_air: Episode[] | null,
@@ -154,7 +154,7 @@ export type TheMovieDBShowAndCredits = TheMovieDBShow & {
 };
 
 export type TheMovieDBMovie = {
-  adult: false,
+  adult: boolean,
   backdrop_path: string,
   belongs_to_collection: string | null,
   budget: number,
@@ -176,7 +176,7 @@ export type TheMovieDBMovie = {
   status: string,
   tagline: string,
   title: string,
-  video: false,
+  video: boolean,
   vote_average: number,
   vote_count: number
 }
@@ -230,12 +230,12 @@ export type TheMovieDBCastShowCredit = TheMovieDBCastContentCreditBase & {
   episode_count: number,
   original_name: string,
   name: string,
-  media_type: "tv",
+  media_type: 'tv',
   first_air_date: string
 };
 
 export type TheMovieDBCastMovieCredit = TheMovieDBCastContentCreditBase & {
-  media_type: "movie",
+  media_type: 'movie',
   original_title: string,
   video: boolean,
   release_date: string,
@@ -250,4 +250,61 @@ export type TheMovieDBCastContentCredits = {
 
 export type TheMovieDBCastAndCredits = TheMovieDBCast & {
   combined_credits: TheMovieDBCastContentCredits
+};
+
+export type TheMovieDBShowSearchResult = {
+  origin_country: string[]
+  first_air_date: string,
+  name: string,
+  vote_average: number,
+  vote_count: number,
+  original_name: string,
+  poster_path: string,
+  overview: string,
+  original_language: string,
+  backdrop_path: string | null,
+  media_type: 'tv',
+  genre_ids: number[],
+  popularity: number,
+  id: number
+};
+
+export type TheMovieDBMovieSearchResult = {
+  original_title: string,
+  poster_path: string,
+  video: boolean,
+  vote_average: number,
+  backdrop_path: string,
+  vote_count: number,
+  release_date: string,
+  id: number,
+  overview: string,
+  adult: boolean,
+  title: string,
+  media_type: 'movie',
+  genre_ids: number[],
+  popularity: number,
+  original_language: string
+};
+
+export type TheMovieDBCastSearchResult = {
+  gender: number,
+  known_for_department: string,
+  popularity: number,
+  profile_path: string,
+  adult: boolean,
+  name: string,
+  id: number,
+  media_type: 'person',
+  known_for: (TheMovieDBShowSearchResult | TheMovieDBMovieSearchResult)[]
+};
+
+export type TheMovieDBSearchResult =
+  TheMovieDBShowSearchResult | TheMovieDBMovieSearchResult | TheMovieDBCastSearchResult;
+
+export type TheMovieDBSearchResults = {
+  page: number,
+  results: TheMovieDBSearchResult[],
+  total_pages: number,
+  total_results: number
 };

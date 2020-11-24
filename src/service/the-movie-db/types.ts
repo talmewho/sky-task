@@ -20,3 +20,18 @@ export type Content = SummarizedContent & {
   cast: {id: number, name: string}[],
   year: number
 };
+
+export type SearchResult = {
+  id: number,
+  name: string,
+  imageURL: string,
+  knownFor?: string[],
+  type: 'tv' | 'movie' | 'person'
+};
+
+export type SearchResults = {
+  results: SearchResult[],
+  totalCount: number,
+  totalPageCount: number,
+  page: number
+};
