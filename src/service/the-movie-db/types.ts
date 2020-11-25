@@ -25,6 +25,7 @@ export type SearchResult = {
   id: number,
   name: string,
   imageURL: string,
+  year?: number,
   knownFor?: string[],
   type: 'tv' | 'movie' | 'person'
 };

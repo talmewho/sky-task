@@ -59,12 +59,16 @@ const getImageURL =
            fallbackURL;
 };
 
+const getYear = (date: string): number => {
+  return date ? new Date(date).getFullYear() : 0
+};
+
 export const getShow =
   async ({showID, posterImageSize, fetcher = defaultFetcher}: GetShowOptions): Promise<Content> => {
-  const {id, name, poster_path, first_air_date: release_date, overview, credits: {cast}} =
+  const {id, name, poster_path, first_air_date: releaseDate, overview, credits: {cast}} =
     await fetcher.getShow(showID);
 
-  const year = release_date ? new Date(release_date).getFullYear() : 0;
+  const year = getYear(releaseDate);
 
   const imageURL =
     await getImageURL(
@@ -91,7 +95,7 @@ export const getMovie =
   const {id, title: name, poster_path, release_date, overview, credits: {cast}} =
     await fetcher.getMovie(movieID);
 
-  const year = release_date ? new Date(release_date).getUTCFullYear() : 0;
+  const year = getYear(release_date);
 
   const imageURL =
     await getImageURL(
@@ -138,11 +142,11 @@ export const getPerson =
     if (credit.media_type === constants.mediaType.tv) {
       const showCredit = credit as TheMovieDBPersonShowCredit;
       name = showCredit.name;
-      year = showCredit.first_air_date ? new Date(showCredit.first_air_date).getFullYear() : 0;
+      year = getYear(showCredit.first_air_date);
     } else {
       const movieCredit = credit as TheMovieDBPersonMovieCredit;
       name = movieCredit.title;
-      year = movieCredit.release_date ? new Date(movieCredit.release_date).getFullYear() : 0;
+      year = getYear(movieCredit.release_date);
     }
     return {id: credit.id, name, type: credit.media_type, year};
   })
@@ -173,11 +177,13 @@ const getKnownFor = (
 ): Promise<SearchResult>[] =>
   rawResults.map<Promise<SearchResult>>(async (item: TheMovieDBSearchResult): Promise<SearchResult> => {
     let name;
+    let year;
     let knownFor: string[] | undefined = undefined;
     let imageURL: string;
     if (item.media_type === constants.mediaType.tv) {
       const show = item as TheMovieDBShowSearchResult;
       name = show.name;
+      year = getYear(show.first_air_date);
       imageURL =
         await getImageURL(
           show.poster_path,
@@ -189,6 +195,7 @@ const getKnownFor = (
     } else if (item.media_type === constants.mediaType.movie) {
       const movie = item as TheMovieDBMovieSearchResult;
       name = movie.title;
+      year = getYear(movie.release_date);
       imageURL =
         await getImageURL(
           movie.poster_path,
@@ -214,7 +221,7 @@ const getKnownFor = (
                (content as TheMovieDBMovieSearchResult).title;
       });
     }
-    return {name, id: item.id, type: item.media_type, knownFor, imageURL};
+    return {name, id: item.id, year, type: item.media_type, knownFor, imageURL};
   });
 
 export const search =

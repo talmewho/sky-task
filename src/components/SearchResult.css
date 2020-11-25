@@ -4,10 +4,19 @@
   margin-bottom: 1rem;
   padding: 1rem;
   width: 25%;
-}
-.search-result a {
+  transition: all 500ms;
   display: flex;
   overflow-wrap: anywhere;
+  color: inherit;
+  text-decoration: none;
+}
+.search-result.expanded {
+  width: calc(3 * 25% + 2 * 3rem)
+}
+
+.search-result .name {
+  color: pink;
+  text-decoration: underline;
 }
 
 .search-result.movie img,
@@ -23,10 +32,17 @@
 
 .search-result figure {
   margin: 0 1rem;
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  align-items: center;
 }
 
 .search-result.person figure {
-  width: 92px;
-  display: flex;
-  justify-content: center;
+  min-width: 92px;
+  margin: 0 1rem;
+}
+
+.search-result .extra-detail {
+  margin-top: 1rem;
 }
