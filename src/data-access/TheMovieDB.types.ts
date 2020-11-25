@@ -1,3 +1,9 @@
+export type TheMovieDBShowEntityName = 'tv';
+export type TheMovieDBMovieEntityName = 'movie';
+export type TheMovieDBPersonEntityName = 'person';
+export type TheMovieDBEntityNames =
+  TheMovieDBShowEntityName | TheMovieDBMovieEntityName | TheMovieDBPersonEntityName;
+
 export type TheMovieDBImageConfiguration = {
     base_url: string,
     secure_base_url: string,
@@ -203,11 +209,11 @@ export type TheMovieDBPerson = {
 };
 
 export type TheMovieDBPersonContentCredit = TheMovieDBShowCastCredit & {
-  media_type: 'tv' | 'movie'
+  media_type: TheMovieDBShowEntityName | TheMovieDBMovieEntityName
 };
 
 type TheMovieDBCrewContentCredit = TheMovieDBCrewCredit & {
-  media_type: 'tv' | 'movie'
+  media_type: TheMovieDBShowEntityName | TheMovieDBMovieEntityName
 };
 
 
@@ -230,12 +236,12 @@ export type TheMovieDBPersonShowCredit = TheMovieDBPersonContentCreditBase & {
   episode_count: number,
   original_name: string,
   name: string,
-  media_type: 'tv',
+  media_type: TheMovieDBShowEntityName,
   first_air_date: string
 };
 
 export type TheMovieDBPersonMovieCredit = TheMovieDBPersonContentCreditBase & {
-  media_type: 'movie',
+  media_type: TheMovieDBMovieEntityName,
   original_title: string,
   video: boolean,
   release_date: string,
@@ -263,7 +269,7 @@ export type TheMovieDBShowSearchResult = {
   overview: string,
   original_language: string,
   backdrop_path: string | null,
-  media_type: 'tv',
+  media_type: TheMovieDBShowEntityName,
   genre_ids: number[],
   popularity: number,
   id: number
@@ -281,7 +287,7 @@ export type TheMovieDBMovieSearchResult = {
   overview: string,
   adult: boolean,
   title: string,
-  media_type: 'movie',
+  media_type: TheMovieDBMovieEntityName,
   genre_ids: number[],
   popularity: number,
   original_language: string
@@ -295,7 +301,7 @@ export type TheMovieDBPersonSearchResult = {
   adult: boolean,
   name: string,
   id: number,
-  media_type: 'person',
+  media_type: TheMovieDBPersonEntityName,
   known_for: (TheMovieDBShowSearchResult | TheMovieDBMovieSearchResult)[]
 };
 

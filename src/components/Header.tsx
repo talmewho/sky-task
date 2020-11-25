@@ -8,9 +8,10 @@ import './Header.css';
 const Header: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const handleSearch = (query: string) => {
+
+  const handleSearch = (query: string, filter: string) => {
     (async () => {
-      const queryString = new URLSearchParams({query}).toString();
+      const queryString = new URLSearchParams({query, filter}).toString();
       history.push(`/search-results?${queryString}`);
     })();
   };

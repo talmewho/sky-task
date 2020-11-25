@@ -1,0 +1,15 @@
+.search-filter {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0.6;
+}
+
+.search-filter label {
+  padding: 0 0 0 0.5rem;
+}
+
+.search-form:focus-within .search-filter,
+.search-form:hover .search-filter {
+  opacity: 1;
+}

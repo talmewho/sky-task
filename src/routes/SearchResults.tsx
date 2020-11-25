@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {useLocation} from 'react-router-dom';
 
-import {SearchResults as SearchResultsType} from '../service/the-movie-db/types';
+import {SearchResults as SearchResultsType, FilterNames} from '../service/the-movie-db/types';
 
 import constants from '../common/TheMovieDB.constants';
+
+import {useQuery} from '../common/routingHooks';
 
 import {fetcher} from '../service/the-movie-db';
 
@@ -11,12 +12,14 @@ import SearchResult from '../components/SearchResult';
 
 import './SearchResults.css';
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
 const SearchResults: React.FC = () => {
-  const query = useQuery().get(constants.parameterName.query) || '';
+  const searcParameters = useQuery();
+  const query = searcParameters.get(constants.parameterName.query) || '';
+
+  const filter: FilterNames =
+    constants.mediaType[String(searcParameters.get(constants.parameterName.filter)) as FilterNames] ||
+    constants.mediaType.all;
+
   const [results, setResults] = useState<SearchResultsType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -24,7 +27,11 @@ const SearchResults: React.FC = () => {
 
   const fetchResults = async (page: number) => {
     return await fetcher.search({
-      query, page, posterImageSize: constants.posterSize.w92, profileImageSize: constants.profileSize.w45
+      query,
+      filter,
+      page,
+      posterImageSize: constants.posterSize.w92,
+      profileImageSize: constants.profileSize.w45
     });
   };
 
@@ -41,9 +48,9 @@ const SearchResults: React.FC = () => {
       }
       setResults(newResults);
     })();
-  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [query, filter]); // eslint-disable-line react-hooks/exhaustive-deps
   // ESLint compains about fetch not being listed, but this is fine as it must be different,
-  // but that should not re-run the useEffect callback, only query changes should.
+  // but that should not re-run the useEffect callback, only query and filter changes should.
 
   if (hasError) {
     return (<div>Could not load the results. :( Try again later.</div>);

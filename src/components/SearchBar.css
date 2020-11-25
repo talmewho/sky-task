@@ -2,18 +2,21 @@
   flex-grow: 1;
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .search-form .submit {
-  visibility: hidden;
-  width: 1px;
-  position: absolute;
-  pointer-events: none;
+  height: 3rem;
+  border: 2px solid #651919;
+  background: #002fb3;
+  color: pink;
+  border-radius: 10px;
+  width: 4rem;
+  box-sizing: border-box;
 }
 
 .search-field {
-  pointer-events: auto;
-  transition: all 500ms;
+  transition: all 200ms;
   width: 10%;
   height: 3rem;
   border-radius: 20px;

@@ -79,6 +79,21 @@ export default class TheMovieDbService extends DataFetcher {
     return this.get<TheMovieDBPersonContentCredits>(`/3/person/${id}/combined_credits`);
   }
 
+  async searchShow(query: string, page: number): Promise<TheMovieDBSearchResults> {
+    return this.get<TheMovieDBSearchResults>(
+      '/3/search/tv', {parameters: {[constants.parameterName.query]: query, page: String(page)}});
+  }
+
+  async searchMovie(query: string, page: number): Promise<TheMovieDBSearchResults> {
+    return this.get<TheMovieDBSearchResults>(
+      '/3/search/movie', {parameters: {[constants.parameterName.query]: query, page: String(page)}});
+  }
+
+  async searchPerson(query: string, page: number): Promise<TheMovieDBSearchResults> {
+    return this.get<TheMovieDBSearchResults>(
+      '/3/search/person', {parameters: {[constants.parameterName.query]: query, page: String(page)}});
+  }
+
   async search(query: string, page: number): Promise<TheMovieDBSearchResults> {
     return this.get<TheMovieDBSearchResults>(
       '/3/search/multi', {parameters: {[constants.parameterName.query]: query, page: String(page)}});

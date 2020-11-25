@@ -1,15 +1,16 @@
 .suggestions {
   display: none;
   position: absolute;
-  width: calc(50% - 7rem);
+  width: calc(50% - 8rem - 12rem);
+  margin-right: 16rem;
   margin-top: 3rem;
   background: #33fc;
   border-radius: 0 0 20px 20px;
   padding-left: 3rem;
-  pointer-events: auto;
 }
 
-.search-form:focus-within .suggestions {
+.search-field:focus + .suggestions,
+.suggestions:hover {
   display: block;
 }
 

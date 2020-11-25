@@ -1,7 +1,14 @@
+import {
+  TheMovieDBShowEntityName,
+  TheMovieDBMovieEntityName,
+  TheMovieDBPersonEntityName,
+  TheMovieDBEntityNames
+} from '../../data-access/TheMovieDB.types';
+
 type SummarizedContent = {
   id: number,
   name: string,
-  type: 'tv' | 'movie',
+  type: TheMovieDBShowEntityName | TheMovieDBMovieEntityName,
   year: number
 };
 
@@ -27,7 +34,7 @@ export type SearchResult = {
   imageURL: string,
   year?: number,
   knownFor?: string[],
-  type: 'tv' | 'movie' | 'person'
+  type: TheMovieDBEntityNames
 };
 
 export type SearchResults = {
@@ -40,5 +47,8 @@ export type SearchResults = {
 export type Suggestion = {
   id: number,
   name: string,
-  type: 'tv' | 'movie' | 'person'
+  type: TheMovieDBEntityNames
 };
+
+export type AllFilterName = 'all';
+export type FilterNames = AllFilterName | TheMovieDBEntityNames;

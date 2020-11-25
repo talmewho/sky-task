@@ -1,28 +1,39 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Suggestion} from '../service/the-movie-db/types';
+import {Suggestion, FilterNames} from '../service/the-movie-db/types';
 
 import constants from '../common/TheMovieDB.constants';
+
+import {useQuery} from '../common/routingHooks';
 
 import {fetcher} from '../service/the-movie-db';
 
 import Suggestions from './Suggestions';
+import Filters from './Filters';
 
 import './SearchBar.css';
 
 interface ISearchBarProps {
-  onSearch(query: string): void;
+  onSearch(query: string, filter: FilterNames): void;
   shouldFocus?: boolean;
 }
 
 const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
   const history = useHistory();
-  const [query, setQuery] = useState<string>('');
+  const searcParameters = useQuery();
+  const defaultQuery = searcParameters.get(constants.parameterName.query) || '';
+  const defaultFilter =
+    constants.mediaType[String(searcParameters.get(constants.parameterName.filter)) as FilterNames] ||
+    constants.mediaType.all;
+
+  const [query, setQuery] = useState<string>(defaultQuery);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number>(-1);
+  const [filter, setFilter] = useState<FilterNames>(defaultFilter);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const submitRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timer | null>(null);
 
   useEffect(() => {
@@ -36,8 +47,12 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
     if (inputRef.current) {
       inputRef.current.blur();
     }
+    if (submitRef.current) {
+      submitRef.current.blur();
+    }
+
     if (query) {
-     onSearch(query);
+     onSearch(query, filter);
     }
   };
 
@@ -83,6 +98,10 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
     }
   };
 
+  const handleFilterChange = (filter: FilterNames) => {
+    setFilter(filter);
+  };
+
   return (
     <form className="search-form" action="/search-results" onSubmit={handleSubmit}>
       <input
@@ -92,10 +111,12 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
         autoComplete="off"
         placeholder="Titanic"
         onChange={handleQueryInput}
+        value={query}
         onKeyDown={handleSuggestionNavigation}
         ref={inputRef} />
       <Suggestions data={suggestions} selectedIndex={selectedSuggestionIndex} />
-      <input className="submit" type="submit" />
+      <input className="submit" type="submit" value="Search" ref={submitRef} />
+      <Filters selectedFilter={filter} onChange={handleFilterChange} />
     </form>
   );
 };

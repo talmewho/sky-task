@@ -1,13 +1,25 @@
+import {
+  TheMovieDBShowEntityName,
+  TheMovieDBMovieEntityName,
+  TheMovieDBPersonEntityName
+} from '../data-access/TheMovieDB.types';
+
+import {AllFilterName} from '../service/the-movie-db/types';
+
 export default {
   mediaType: {
-    tv: 'tv' as 'tv',
-    movie: 'movie' as 'movie',
-    person: 'person' as 'person'
+    tv: 'tv' as TheMovieDBShowEntityName,
+    movie: 'movie' as TheMovieDBMovieEntityName,
+    person: 'person' as TheMovieDBPersonEntityName,
+    // Filter-specific.
+    all: 'all' as AllFilterName
   },
   parameterName: {
     query: 'query',
     appendToResponse: 'append_to_response',
-    apiKey: 'api_key'
+    apiKey: 'api_key',
+    // Filter-specific.
+    filter: 'filter'
   },
   sizeField: {
     poster: 'poster_sizes' as 'poster_sizes',

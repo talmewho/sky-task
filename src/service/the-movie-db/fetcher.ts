@@ -1,4 +1,4 @@
-import {Content, Person, SearchResult, SearchResults, Suggestion} from './types';
+import {Content, Person, SearchResult, SearchResults, Suggestion, FilterNames} from './types';
 import {
   TheMovieDBPersonShowCredit,
   TheMovieDBPersonMovieCredit,
@@ -8,6 +8,7 @@ import {
   TheMovieDBShowSearchResult,
   TheMovieDBMovieSearchResult,
   TheMovieDBPersonSearchResult,
+  TheMovieDBSearchResults,
   TheMovieDBSearchResult
 } from '../../data-access/TheMovieDB.types';
 
@@ -40,6 +41,7 @@ type getPersonOptions = {
 
 type SearchOptions = {
   query: string,
+  filter: FilterNames,
   page: number,
   fetcher?: TheMovieDBFetcher,
   profileImageSize: string,
@@ -178,10 +180,11 @@ export const getPerson =
   };
 };
 
-const getKnownFor = (
+const mapResult = (
   rawResults: TheMovieDBSearchResult[],
   posterImageSize: string,
   profileImageSize: string,
+  filter: FilterNames,
   fetcher: TheMovieDBFetcher
 ): Promise<SearchResult>[] =>
   rawResults.map<Promise<SearchResult>>(async (item: TheMovieDBSearchResult): Promise<SearchResult> => {
@@ -189,7 +192,8 @@ const getKnownFor = (
     let year;
     let knownFor: string[] | undefined = undefined;
     let imageURL: string;
-    if (item.media_type === constants.mediaType.tv) {
+    const type = item.media_type || filter;
+    if (type === constants.mediaType.tv) {
       const show = item as TheMovieDBShowSearchResult;
       name = show.name;
       year = getYear(show.first_air_date);
@@ -201,7 +205,7 @@ const getKnownFor = (
           configuration.defaultContentImageURL,
           fetcher
         );
-    } else if (item.media_type === constants.mediaType.movie) {
+    } else if (type === constants.mediaType.movie) {
       const movie = item as TheMovieDBMovieSearchResult;
       name = movie.title;
       year = getYear(movie.release_date);
@@ -225,31 +229,44 @@ const getKnownFor = (
           fetcher
         );
 
-      knownFor = person.known_for.slice(0, 3).map(content => {
-        return (content as TheMovieDBShowSearchResult).name ||
-               (content as TheMovieDBMovieSearchResult).title;
-      });
+      knownFor = person.known_for.slice(0, 3).map(content =>
+        (content as TheMovieDBShowSearchResult).name ||
+        (content as TheMovieDBMovieSearchResult).title
+      );
     }
-    return {name, id: item.id, year, type: item.media_type, knownFor, imageURL};
+    return {name, id: item.id, year, type, knownFor, imageURL};
   });
 
 export const search =
   async ({
     query,
+    filter,
     page,
     posterImageSize,
     profileImageSize,
     fetcher = defaultFetcher
   }: SearchOptions): Promise<SearchResults> => {
+
+  let fetchedData: TheMovieDBSearchResults;
+  if (filter === constants.mediaType.tv) {
+    fetchedData = await fetcher.searchShow(query, page);
+  } else if (filter === constants.mediaType.movie) {
+    fetchedData = await fetcher.searchMovie(query, page);
+  } else if (filter === constants.mediaType.person) {
+    fetchedData = await fetcher.searchPerson(query, page);
+  } else {
+    fetchedData = await fetcher.search(query, page);
+  }
+
   const {
     results: rawResults,
     total_results: totalCount,
     total_pages: totalPageCount,
     page: outputPage
-  } = await fetcher.search(query, page);
+  } = fetchedData;
 
   const results: SearchResult[] =
-    await Promise.all(getKnownFor(rawResults, posterImageSize, profileImageSize, fetcher));
+    await Promise.all(mapResult(rawResults, posterImageSize, profileImageSize, filter, fetcher));
   return {results, totalCount, page: outputPage, totalPageCount};
 };
 
