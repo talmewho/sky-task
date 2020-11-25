@@ -36,3 +36,9 @@ export type SearchResults = {
   totalPageCount: number,
   page: number
 };
+
+export type Suggestion = {
+  id: number,
+  name: string,
+  type: 'tv' | 'movie' | 'person'
+};

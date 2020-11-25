@@ -1,4 +1,4 @@
-import {Content, Person, SearchResult, SearchResults} from './types';
+import {Content, Person, SearchResult, SearchResults, Suggestion} from './types';
 import {
   TheMovieDBPersonShowCredit,
   TheMovieDBPersonMovieCredit,
@@ -44,6 +44,11 @@ type SearchOptions = {
   fetcher?: TheMovieDBFetcher,
   profileImageSize: string,
   posterImageSize: string
+};
+
+type GetSuggestionsOptions = {
+  query: string,
+  fetcher?: TheMovieDBFetcher
 };
 
 
@@ -242,4 +247,15 @@ export const search =
   const results: SearchResult[] =
     await Promise.all(getKnownFor(rawResults, posterImageSize, profileImageSize, fetcher));
   return {results, totalCount, page: outputPage, totalPageCount};
+};
+
+export const getSuggestions =
+  async ({query, fetcher = defaultFetcher}: GetSuggestionsOptions): Promise<Suggestion[]> => {
+  const {results} = await fetcher.search(query, 1);
+  return results.map(item => {
+    const name =
+      ((item as (TheMovieDBShowSearchResult | TheMovieDBPersonSearchResult)).name) ||
+      ((item as TheMovieDBMovieSearchResult).title);
+    return {name, id: item.id, type: item.media_type};
+  });
 };
