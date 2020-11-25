@@ -12,14 +12,24 @@ import './Movie.css';
 const Movie: React.FC = () => {
   const {id} = useParams();
   const [movie, setMovie] = useState<Content>();
+  const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      setMovie(await fetcher.getMovie({movieID: id, posterImageSize: constants.posterSize.w342}));
+      let newMovie: Content;
+      try {
+        newMovie = await fetcher.getMovie({movieID: id, posterImageSize: constants.posterSize.w342});
+      } catch (e) {
+        setHasError(true);
+        return;
+      }
+      setMovie(newMovie);
     })();
   }, [id]);
 
-  if (!movie) {
+  if (hasError) {
+    return (<div>Could not load the movie. :( Try again later.</div>);
+  } else if (!movie) {
     return (<div>Loading...</div>);
   }
 

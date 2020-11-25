@@ -12,14 +12,24 @@ import './Person.css';
 const Person: React.FC = () => {
   const {id} = useParams();
   const [person, setPerson] = useState<PersonData>();
+  const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      setPerson(await fetcher.getPerson({personID: id, profileImageSize: constants.profileSize.w185}));
+      let newPerson: PersonData;
+      try {
+        newPerson = await fetcher.getPerson({personID: id, profileImageSize: constants.profileSize.w185});
+      } catch (e) {
+        setHasError(true);
+        return;
+      }
+      setPerson(newPerson);
     })();
   }, [id]);
 
-  if (!person) {
+  if (hasError) {
+    return (<div>Could not load the person. :( Try again later.</div>);
+  } else if (!person) {
     return (<div>Loading...</div>);
   }
 

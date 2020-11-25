@@ -59,9 +59,13 @@ const getImageURL =
     size: string,
     fallbackURL: string,
     fetcher: TheMovieDBFetcher) => {
-  return relativeURL ?
-           await fetcher.getImageURL(relativeURL, type, size) :
-           fallbackURL;
+  try {
+    return relativeURL ?
+             await fetcher.getImageURL(relativeURL, type, size) :
+             fallbackURL;
+  } catch (e) {
+    return fallbackURL;
+  }
 };
 
 const getYear = (date: string): number => {

@@ -12,14 +12,24 @@ import './Show.css';
 const Show: React.FC = () => {
   const {id} = useParams();
   const [show, setShow] = useState<Content>();
+  const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      setShow(await fetcher.getShow({showID: id, posterImageSize: constants.posterSize.w342}));
+      let newShow: Content;
+      try {
+        newShow = await fetcher.getShow({showID: id, posterImageSize: constants.posterSize.w342});
+      } catch (e) {
+        setHasError(true);
+        return;
+      }
+      setShow(newShow);
     })();
   }, [id]);
 
-  if (!show) {
+  if (hasError) {
+    return (<div>Could not load the show. :( Try again later.</div>);
+  } else if (!show) {
     return (<div>Loading...</div>);
   }
 

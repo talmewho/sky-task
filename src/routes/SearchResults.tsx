@@ -18,26 +18,36 @@ function useQuery() {
 const SearchResults: React.FC = () => {
   const query = useQuery().get(constants.parameterName.query) || '';
   const [results, setResults] = useState<SearchResultsType>();
-  const [isLoading, setIsLoading] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [hasNextPageError, setHasNextPageError] = useState<boolean>(false);
 
   const fetchResults = async (page: number) => {
-    setIsLoading(true);
-    const nextResults = await fetcher.search({
+    return await fetcher.search({
       query, page, posterImageSize: constants.posterSize.w92, profileImageSize: constants.profileSize.w45
     });
-    setIsLoading(false);
-    return nextResults;
   };
 
   useEffect(() => {
     (async () => {
-      setResults(await fetchResults(1));
+      setHasError(false);
+      setResults(undefined);
+      let newResults: SearchResultsType;
+      try {
+        newResults = await fetchResults(1);
+      } catch (e) {
+        setHasError(true);
+        return;
+      }
+      setResults(newResults);
     })();
   }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
   // ESLint compains about fetch not being listed, but this is fine as it must be different,
   // but that should not re-run the useEffect callback, only query changes should.
 
-  if (!results) {
+  if (hasError) {
+    return (<div>Could not load the results. :( Try again later.</div>);
+  } else if (!results) {
     return (<div>Loading...</div>);
   }
 
@@ -46,12 +56,24 @@ const SearchResults: React.FC = () => {
   }
 
   const handleShowMoreResults = async () => {
-    const nextResults = {...await fetchResults(results.page + 1)};
+    setIsLoading(true);
+    setHasNextPageError(false);
+    let nextResults: SearchResultsType;
+    try {
+      nextResults = {...await fetchResults(results.page + 1)};
+    } catch (e) {
+      setHasNextPageError(true);
+      setIsLoading(false);
+      return;
+    }
+
     nextResults.results =
       results.results.concat(
         // Workaround for "Leonardo" page 4 and 5 containing the same result ("Prof. Leonardo").
         nextResults.results.filter(
           ({id}) => !results.results.find(({id: existingID}) => id === existingID)));
+
+    setIsLoading(false);
     setResults(nextResults);
   };
 
@@ -61,7 +83,13 @@ const SearchResults: React.FC = () => {
 
   const renderShowMore = () => {
     if (results.page < results.totalPageCount) {
-      const text = isLoading ? 'Loading...' : 'Show more results';
+      const text =
+        isLoading ?
+          'Loading...' :
+        hasNextPageError ?
+          'Failed to show more. Click to try again' :
+          'Show more results';
+
       return (
         <button disabled={isLoading}
           className="show-more-results"
