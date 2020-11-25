@@ -33,7 +33,12 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSearch(query);
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+    if (query) {
+     onSearch(query);
+    }
   };
 
   const handleQueryInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +51,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
         }
         timerRef.current =
           setTimeout(async () => {
-            setSuggestions(await fetcher.getSuggestions({query: newQuery}))
+            setSuggestions(await fetcher.getSuggestions({query: newQuery}));
             setSelectedSuggestionIndex(-1);
           }, 200);
       } else {
@@ -68,7 +73,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
       event.preventDefault();
       const newIndex = selectedSuggestionIndex > -1 ? selectedSuggestionIndex - 1 : (suggestions.length - 1);
       setSelectedSuggestionIndex(newIndex);
-    } else if (event.key === 'Enter') {
+    } else if (event.key === 'Enter' && selectedSuggestionIndex > -1) {
       event.preventDefault();
       const item = suggestions[selectedSuggestionIndex];
       history.push(`/${item.type}/${item.id}`);
