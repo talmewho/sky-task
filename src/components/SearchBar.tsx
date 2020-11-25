@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 
+import constants from '../common/TheMovieDB.constants';
+
 import './SearchBar.css';
 
 interface ISearchBarProps {
@@ -31,7 +33,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
     <form className="search-form" action="/search-results" onSubmit={handleSubmit}>
       <input
         className="search-field"
-        name="query"
+        name={constants.parameterName.query}
         type="search"
         placeholder="Titanic"
         onChange={handleQueryInput}

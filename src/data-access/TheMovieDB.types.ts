@@ -185,7 +185,7 @@ export type TheMovieDBMovieAndCredits = TheMovieDBMovie & {
   credits: TheMovieDBMovieCredits
 };
 
-export type TheMovieDBCast = {
+export type TheMovieDBPerson = {
   birthday: string,
   known_for_department: string,
   deathday: string | null,
@@ -202,7 +202,7 @@ export type TheMovieDBCast = {
   homepage: string | null
 };
 
-export type TheMovieDBCastContentCredit = TheMovieDBShowCastCredit & {
+export type TheMovieDBPersonContentCredit = TheMovieDBShowCastCredit & {
   media_type: 'tv' | 'movie'
 };
 
@@ -211,7 +211,7 @@ type TheMovieDBCrewContentCredit = TheMovieDBCrewCredit & {
 };
 
 
-type TheMovieDBCastContentCreditBase = {
+type TheMovieDBPersonContentCreditBase = {
   id: number,
   original_language: string,
   overview: string,
@@ -226,7 +226,7 @@ type TheMovieDBCastContentCreditBase = {
   credit_id: string
 };
 
-export type TheMovieDBCastShowCredit = TheMovieDBCastContentCreditBase & {
+export type TheMovieDBPersonShowCredit = TheMovieDBPersonContentCreditBase & {
   episode_count: number,
   original_name: string,
   name: string,
@@ -234,7 +234,7 @@ export type TheMovieDBCastShowCredit = TheMovieDBCastContentCreditBase & {
   first_air_date: string
 };
 
-export type TheMovieDBCastMovieCredit = TheMovieDBCastContentCreditBase & {
+export type TheMovieDBPersonMovieCredit = TheMovieDBPersonContentCreditBase & {
   media_type: 'movie',
   original_title: string,
   video: boolean,
@@ -243,13 +243,13 @@ export type TheMovieDBCastMovieCredit = TheMovieDBCastContentCreditBase & {
   adult: boolean
 };
 
-export type TheMovieDBCastContentCredits = {
-  cast: (TheMovieDBCastMovieCredit | TheMovieDBCastShowCredit)[],
-  crew: TheMovieDBCastMovieCredit[]
+export type TheMovieDBPersonContentCredits = {
+  cast: (TheMovieDBPersonMovieCredit | TheMovieDBPersonShowCredit)[],
+  crew: TheMovieDBPersonMovieCredit[]
 };
 
-export type TheMovieDBCastAndCredits = TheMovieDBCast & {
-  combined_credits: TheMovieDBCastContentCredits
+export type TheMovieDBPersonAndCredits = TheMovieDBPerson & {
+  combined_credits: TheMovieDBPersonContentCredits
 };
 
 export type TheMovieDBShowSearchResult = {
@@ -287,7 +287,7 @@ export type TheMovieDBMovieSearchResult = {
   original_language: string
 };
 
-export type TheMovieDBCastSearchResult = {
+export type TheMovieDBPersonSearchResult = {
   gender: number,
   known_for_department: string,
   popularity: number,
@@ -300,7 +300,7 @@ export type TheMovieDBCastSearchResult = {
 };
 
 export type TheMovieDBSearchResult =
-  TheMovieDBShowSearchResult | TheMovieDBMovieSearchResult | TheMovieDBCastSearchResult;
+  TheMovieDBShowSearchResult | TheMovieDBMovieSearchResult | TheMovieDBPersonSearchResult;
 
 export type TheMovieDBSearchResults = {
   page: number,

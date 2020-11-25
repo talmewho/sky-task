@@ -5,7 +5,7 @@ type SummarizedContent = {
   year: number
 };
 
-export type Cast = {
+export type Person = {
   id: number,
   name: string,
   imageURL: string,

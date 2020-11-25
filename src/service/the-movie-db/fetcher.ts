@@ -1,15 +1,17 @@
-import {Content, Cast, SearchResult, SearchResults} from './types';
+import {Content, Person, SearchResult, SearchResults} from './types';
 import {
-  TheMovieDBCastShowCredit,
-  TheMovieDBCastMovieCredit,
+  TheMovieDBPersonShowCredit,
+  TheMovieDBPersonMovieCredit,
   TheMovieDBShowCastCredit,
   TheMovieDBMovieCastCredit,
-  TheMovieDBCastAndCredits,
+  TheMovieDBPersonAndCredits,
   TheMovieDBShowSearchResult,
   TheMovieDBMovieSearchResult,
-  TheMovieDBCastSearchResult,
+  TheMovieDBPersonSearchResult,
   TheMovieDBSearchResult
 } from '../../data-access/TheMovieDB.types';
+
+import constants from '../../common/TheMovieDB.constants';
 
 import configuration from '../../configuration';
 
@@ -30,8 +32,8 @@ type GetMovieOptions = {
   posterImageSize: string
 };
 
-type GetCastOptions = {
-  castID: string,
+type getPersonOptions = {
+  personID: string,
   fetcher?: TheMovieDBFetcher,
   profileImageSize: string
 };
@@ -67,7 +69,7 @@ export const getShow =
   const imageURL =
     await getImageURL(
       poster_path,
-      'poster_sizes',
+      constants.sizeField.poster,
       posterImageSize,
       configuration.defaultContentImageURL,
       fetcher
@@ -78,7 +80,7 @@ export const getShow =
     id,
     name,
     year,
-    type: 'tv',
+    type: constants.mediaType.tv,
     overview,
     imageURL,
     cast: cast.map(({name, id}: TheMovieDBShowCastCredit) => ({name, id}))};
@@ -94,7 +96,7 @@ export const getMovie =
   const imageURL =
     await getImageURL(
       poster_path,
-      'poster_sizes',
+      constants.sizeField.poster,
       posterImageSize,
       configuration.defaultContentImageURL,
       fetcher
@@ -104,16 +106,16 @@ export const getMovie =
     id,
     name,
     year,
-    type: 'movie',
+    type: constants.mediaType.movie,
     overview,
     imageURL,
     cast: cast.map(({name, id}: TheMovieDBMovieCastCredit) => ({name, id}))};
 };
 
-export const getCast =
-  async ({castID, profileImageSize, fetcher = defaultFetcher}: GetCastOptions): Promise<Cast> => {
-  const {id, name, profile_path, birthday, deathday, biography, combined_credits: {cast}}: TheMovieDBCastAndCredits =
-    await fetcher.getCast(castID);
+export const getPerson =
+  async ({personID, profileImageSize, fetcher = defaultFetcher}: getPersonOptions): Promise<Person> => {
+  const {id, name, profile_path, birthday, deathday, biography, combined_credits: {cast}}: TheMovieDBPersonAndCredits =
+    await fetcher.getPerson(personID);
 
   const age =
     new Date(
@@ -124,21 +126,21 @@ export const getCast =
   const imageURL =
     await getImageURL(
       profile_path,
-      'profile_sizes',
+      constants.sizeField.profile,
       profileImageSize,
-      configuration.defaultCastImageURL,
+      configuration.defaultPersonImageURL,
       fetcher
     );
 
-  const contents = cast.map((credit: TheMovieDBCastShowCredit | TheMovieDBCastMovieCredit) => {
+  const contents = cast.map((credit: TheMovieDBPersonShowCredit | TheMovieDBPersonMovieCredit) => {
     let name: string;
     let year: number;
-    if (credit.media_type === 'tv') {
-      const showCredit = credit as TheMovieDBCastShowCredit;
+    if (credit.media_type === constants.mediaType.tv) {
+      const showCredit = credit as TheMovieDBPersonShowCredit;
       name = showCredit.name;
       year = showCredit.first_air_date ? new Date(showCredit.first_air_date).getFullYear() : 0;
     } else {
-      const movieCredit = credit as TheMovieDBCastMovieCredit;
+      const movieCredit = credit as TheMovieDBPersonMovieCredit;
       name = movieCredit.title;
       year = movieCredit.release_date ? new Date(movieCredit.release_date).getFullYear() : 0;
     }
@@ -168,53 +170,52 @@ const getKnownFor = (
   posterImageSize: string,
   profileImageSize: string,
   fetcher: TheMovieDBFetcher
-): Promise<SearchResult>[] => {
-  return rawResults.map<Promise<SearchResult>>(async (item: TheMovieDBSearchResult): Promise<SearchResult> => {
-      let name;
-      let knownFor: string[] | undefined = undefined;
-      let imageURL: string;
-      if (item.media_type === 'tv') {
-        const show = item as TheMovieDBShowSearchResult;
-        name = show.name;
-        imageURL =
-          await getImageURL(
-            show.poster_path,
-            'poster_sizes',
-            posterImageSize,
-            configuration.defaultContentImageURL,
-            fetcher
-          );
-      } else if (item.media_type === 'movie') {
-        const movie = item as TheMovieDBMovieSearchResult;
-        name = movie.title;
-        imageURL =
-          await getImageURL(
-            movie.poster_path,
-            'poster_sizes',
-            posterImageSize,
-            configuration.defaultContentImageURL,
-            fetcher
-          );
-      } else {
-        const cast = item as TheMovieDBCastSearchResult;
-        name = cast.name;
-        imageURL =
-          await getImageURL(
-            cast.profile_path,
-            'profile_sizes',
-            profileImageSize,
-            configuration.defaultCastImageURL,
-            fetcher
-          );
+): Promise<SearchResult>[] =>
+  rawResults.map<Promise<SearchResult>>(async (item: TheMovieDBSearchResult): Promise<SearchResult> => {
+    let name;
+    let knownFor: string[] | undefined = undefined;
+    let imageURL: string;
+    if (item.media_type === constants.mediaType.tv) {
+      const show = item as TheMovieDBShowSearchResult;
+      name = show.name;
+      imageURL =
+        await getImageURL(
+          show.poster_path,
+          constants.sizeField.poster,
+          posterImageSize,
+          configuration.defaultContentImageURL,
+          fetcher
+        );
+    } else if (item.media_type === constants.mediaType.movie) {
+      const movie = item as TheMovieDBMovieSearchResult;
+      name = movie.title;
+      imageURL =
+        await getImageURL(
+          movie.poster_path,
+          constants.sizeField.poster,
+          posterImageSize,
+          configuration.defaultContentImageURL,
+          fetcher
+        );
+    } else {
+      const person = item as TheMovieDBPersonSearchResult;
+      name = person.name;
+      imageURL =
+        await getImageURL(
+          person.profile_path,
+          constants.sizeField.profile,
+          profileImageSize,
+          configuration.defaultPersonImageURL,
+          fetcher
+        );
 
-        knownFor = cast.known_for.slice(0, 3).map(content => {
-          return (content as TheMovieDBShowSearchResult).name ||
-                 (content as TheMovieDBMovieSearchResult).title;
-        });
-      }
-      return {name, id: item.id, type: item.media_type, knownFor, imageURL};
+      knownFor = person.known_for.slice(0, 3).map(content => {
+        return (content as TheMovieDBShowSearchResult).name ||
+               (content as TheMovieDBMovieSearchResult).title;
+      });
+    }
+    return {name, id: item.id, type: item.media_type, knownFor, imageURL};
   });
-};
 
 export const search =
   async ({
@@ -224,14 +225,14 @@ export const search =
     profileImageSize,
     fetcher = defaultFetcher
   }: SearchOptions): Promise<SearchResults> => {
-    const {
-      results: rawResults,
-      total_results: totalCount,
-      total_pages: totalPageCount,
-      page: outputPage
-    } = await fetcher.search(query, page);
+  const {
+    results: rawResults,
+    total_results: totalCount,
+    total_pages: totalPageCount,
+    page: outputPage
+  } = await fetcher.search(query, page);
 
-    const results: SearchResult[] =
-      await Promise.all(getKnownFor(rawResults, posterImageSize, profileImageSize, fetcher));
-    return {results, totalCount, page: outputPage, totalPageCount};
+  const results: SearchResult[] =
+    await Promise.all(getKnownFor(rawResults, posterImageSize, profileImageSize, fetcher));
+  return {results, totalCount, page: outputPage, totalPageCount};
 };

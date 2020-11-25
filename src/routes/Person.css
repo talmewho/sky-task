@@ -1,0 +1,15 @@
+.person-details {
+  display: flex;
+}
+
+.person-details .hero {
+  margin: 0 1rem;
+}
+
+.person-details .content-title {
+  margin-top: 0;
+}
+
+.person-details .content-description {
+  margin: 1rem 0;
+}

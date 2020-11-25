@@ -4,12 +4,14 @@ import {
   TheMovieDBShowCredits,
   TheMovieDBMovieCredits,
   TheMovieDBConfiguration,
-  TheMovieDBCastContentCredits,
+  TheMovieDBPersonContentCredits,
   TheMovieDBImageConfiguration,
   TheMovieDBSearchResults,
-  TheMovieDBCastAndCredits
+  TheMovieDBPersonAndCredits
 } from './TheMovieDB.types';
 import {FetcherOptions} from './DataFetcher.types';
+
+import constants from '../common/TheMovieDB.constants';
 
 import DataFetcher from './DataFetcher';
 
@@ -19,7 +21,7 @@ export default class TheMovieDbService extends DataFetcher {
   baseURL: string = applicationConfiguration.theMovieDB.apiBaseURL;
 
   baseParameters: Record<string, string> =
-    {[applicationConfiguration.theMovieDB.apiKeyParameterName]: applicationConfiguration.theMovieDB.apiKey};
+    {[constants.parameterName.apiKey]: applicationConfiguration.theMovieDB.apiKey};
 
   configurationPromise: Promise<TheMovieDBConfiguration> | null = null;
 
@@ -36,7 +38,13 @@ export default class TheMovieDbService extends DataFetcher {
   }
 
   async getShow(id: string): Promise<TheMovieDBShowAndCredits> {
-    return this.get<TheMovieDBShowAndCredits>(`/3/tv/${id}`, {parameters: {append_to_response: 'credits'}});
+    return this.get<TheMovieDBShowAndCredits>(
+      `/3/tv/${id}`, {
+        parameters: {
+          [constants.parameterName.appendToResponse]: constants.appendToResponseName.credits
+        }
+      }
+    );
   }
 
   async getShowCredits(id: string): Promise<TheMovieDBShowCredits> {
@@ -44,23 +52,36 @@ export default class TheMovieDbService extends DataFetcher {
   }
 
   async getMovie(id: string): Promise<TheMovieDBMovieAndCredits> {
-    return this.get<TheMovieDBMovieAndCredits>(`/3/movie/${id}`, {parameters: {append_to_response: 'credits'}});
+    return this.get<TheMovieDBMovieAndCredits>(
+      `/3/movie/${id}`, {
+        parameters: {
+          [constants.parameterName.appendToResponse]: constants.appendToResponseName.credits
+        }
+      }
+    );
   }
 
   async getMovieCredits(id: string): Promise<TheMovieDBMovieCredits> {
     return this.get<TheMovieDBMovieCredits>(`/3/movie/${id}/credits`);
   }
 
-  async getCast(id: string): Promise<TheMovieDBCastAndCredits> {
-    return this.get<TheMovieDBCastAndCredits>(`/3/person/${id}`, {parameters: {append_to_response: 'combined_credits'}});
+  async getPerson(id: string): Promise<TheMovieDBPersonAndCredits> {
+    return this.get<TheMovieDBPersonAndCredits>(
+      `/3/person/${id}`, {
+        parameters: {
+          [constants.parameterName.appendToResponse]: constants.appendToResponseName.combinedCredits
+        }
+      }
+    );
   }
 
-  async getCastCredits(id: string): Promise<TheMovieDBCastContentCredits> {
-    return this.get<TheMovieDBCastContentCredits>(`/3/person/${id}/combined_credits`);
+  async getPersonCredits(id: string): Promise<TheMovieDBPersonContentCredits> {
+    return this.get<TheMovieDBPersonContentCredits>(`/3/person/${id}/combined_credits`);
   }
 
   async search(query: string, page: number): Promise<TheMovieDBSearchResults> {
-    return this.get<TheMovieDBSearchResults>('/3/search/multi', {parameters: {query, page: String(page)}});
+    return this.get<TheMovieDBSearchResults>(
+      '/3/search/multi', {parameters: {[constants.parameterName.query]: query, page: String(page)}});
   }
 
   async getImageURL(

@@ -13,7 +13,7 @@ const SearchResult: React.FC<ISearchResultProp> = ({data}) => {
   const className = `search-result ${data.type}`;
   return (
     <section className={className} key={data.type + data.id}>
-      <Link to={`/${data.type === 'person'?'cast':data.type}/${data.id}`}>
+      <Link to={`/${data.type}/${data.id}`}>
         <figure><img src={data.imageURL} alt={data.name} /></figure>
         {data.name}
       </Link>

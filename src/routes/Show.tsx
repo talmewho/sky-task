@@ -3,6 +3,8 @@ import {useParams, Link} from 'react-router-dom';
 
 import {Content} from '../service/the-movie-db/types';
 
+import constants from '../common/TheMovieDB.constants';
+
 import {fetcher} from '../service/the-movie-db';
 
 import './Show.css';
@@ -13,7 +15,7 @@ const Show: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      setShow(await fetcher.getShow({showID: id, posterImageSize: 'w342'}));
+      setShow(await fetcher.getShow({showID: id, posterImageSize: constants.posterSize.w342}));
     })();
   }, [id]);
 
@@ -32,7 +34,7 @@ const Show: React.FC = () => {
           '.';
       return (
         <React.Fragment key={id}>
-          <Link to={`/cast/${id}`}>{name}</Link>{comma}
+          <Link to={`/${constants.mediaType.person}/${id}`}>{name}</Link>{comma}
         </React.Fragment>
       );
     });

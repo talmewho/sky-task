@@ -3,6 +3,8 @@ import {useLocation} from 'react-router-dom';
 
 import {SearchResults as SearchResultsType} from '../service/the-movie-db/types';
 
+import constants from '../common/TheMovieDB.constants';
+
 import {fetcher} from '../service/the-movie-db';
 
 import SearchResult from '../components/SearchResult';
@@ -14,22 +16,26 @@ function useQuery() {
 }
 
 const SearchResults: React.FC = () => {
-  const query = useQuery().get('query') || '';
+  const query = useQuery().get(constants.parameterName.query) || '';
   const [results, setResults] = useState<SearchResultsType>();
   const [isLoading, setIsLoading] = useState<boolean>();
 
-  const fetch = async (page: number) => {
+  const fetchResults = async (page: number) => {
     setIsLoading(true);
-    const nextResults = await fetcher.search({query, page, posterImageSize: 'w92', profileImageSize: 'w45'});
+    const nextResults = await fetcher.search({
+      query, page, posterImageSize: constants.posterSize.w92, profileImageSize: constants.profileSize.w45
+    });
     setIsLoading(false);
     return nextResults;
   };
 
   useEffect(() => {
     (async () => {
-      setResults(await fetch(1));
+      setResults(await fetchResults(1));
     })();
   }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
+  // ESLint compains about fetch not being listed, but this is fine as it must be different,
+  // but that should not re-run the useEffect callback, only query changes should.
 
   if (!results) {
     return (<div>Loading...</div>);
@@ -40,7 +46,7 @@ const SearchResults: React.FC = () => {
   }
 
   const handleShowMoreResults = async () => {
-    const nextResults = {...await fetch(results.page + 1)};
+    const nextResults = {...await fetchResults(results.page + 1)};
     nextResults.results =
       results.results.concat(
         // Workaround for "Leonardo" page 4 and 5 containing the same result ("Prof. Leonardo").
