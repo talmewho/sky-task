@@ -1,12 +1,12 @@
 .suggestions {
   display: none;
   position: absolute;
-  width: calc(50% - 8rem - 12rem);
+  width: calc(50% - 8rem - 11rem);
   margin-right: 16rem;
   margin-top: 3rem;
   background: #33fc;
   border-radius: 0 0 20px 20px;
-  padding-left: 3rem;
+  padding-left: 2rem;
 }
 
 .search-field:focus + .suggestions,
