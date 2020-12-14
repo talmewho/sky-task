@@ -9,7 +9,9 @@ import {
   TheMovieDBMovieSearchResult,
   TheMovieDBPersonSearchResult,
   TheMovieDBSearchResults,
-  TheMovieDBSearchResult
+  TheMovieDBSearchResult,
+  TheMovieDBPosterSizes,
+  TheMovieDBProfileSizes
 } from '../../data-access/TheMovieDB.types';
 
 import constants from '../../common/TheMovieDB.constants';
@@ -57,17 +59,19 @@ type GetSuggestionsOptions = {
 const getImageURL =
   async (
     relativeURL: string | null,
-    type: 'poster_sizes' | 'profile_sizes',
+    type: TheMovieDBPosterSizes | TheMovieDBProfileSizes,
     size: string,
     fallbackURL: string,
     fetcher: TheMovieDBFetcher) => {
+  let finalURL;
   try {
-    return relativeURL ?
+      finalURL = relativeURL ?
              await fetcher.getImageURL(relativeURL, type, size) :
-             fallbackURL;
-  } catch (e) {
-    return fallbackURL;
+             undefined;
+  } catch (ignore) {
   }
+
+  return finalURL ?? fallbackURL;
 };
 
 const getYear = (date: string): number => {

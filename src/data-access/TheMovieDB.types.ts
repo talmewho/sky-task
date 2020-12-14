@@ -4,6 +4,9 @@ export type TheMovieDBPersonEntityName = 'person';
 export type TheMovieDBEntityNames =
   TheMovieDBShowEntityName | TheMovieDBMovieEntityName | TheMovieDBPersonEntityName;
 
+export type TheMovieDBProfileSizes = 'profile_sizes';
+export type TheMovieDBPosterSizes = 'poster_sizes';
+
 export type TheMovieDBImageConfiguration = {
     base_url: string,
     secure_base_url: string,
