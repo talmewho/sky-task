@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components.Movie data fetching throws, error is shown 1`] = `
+<div>
+  Could not load the movie. :( Try again later.
+</div>
+`;
+
+exports[`Components.Movie data is fetched and shown 1`] = `
+<article
+  className="movie-details"
+>
+  <figure
+    className="hero"
+  >
+    <img
+      alt="Amélie"
+      src="https://image.tmdb.org/t/p/w342/slVnvaH6fpF22154vnjQJdXCVZd.jpg"
+    />
+  </figure>
+  <section
+    className="details"
+  >
+    <h1
+      className="content-title"
+    >
+      Amélie
+       (2001)
+    </h1>
+    <div
+      className="content-description"
+    >
+      At a tiny Parisian café, the adorable yet painfully shy Amélie accidentally discovers a gift for helping others. Soon Amelie is spending her days as a matchmaker, guardian angel, and all-around do-gooder. But when she bumps into a handsome stranger, will she find the courage to become the star of her very own love story?
+    </div>
+    Starring 
+    <a
+      href="/person/2405"
+    >
+      Audrey Tautou
+    </a>
+     and 
+    <a
+      href="/person/2406"
+    >
+      Mathieu Kassovitz
+    </a>
+    .
+  </section>
+</article>
+`;
+
+exports[`Components.Movie shows a loading indicator before data is fetched 1`] = `
+<div>
+  Loading...
+</div>
+`;
