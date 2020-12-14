@@ -13,11 +13,11 @@ import SearchResult from '../components/SearchResult';
 import './SearchResults.css';
 
 const SearchResults: React.FC = () => {
-  const searcParameters = useQuery();
-  const query = searcParameters.get(constants.parameterName.query) || '';
+  const searchParameters = useQuery();
+  const query = searchParameters.get(constants.parameterName.query) || '';
 
   const filter: FilterNames =
-    constants.mediaType[String(searcParameters.get(constants.parameterName.filter)) as FilterNames] ||
+    constants.mediaType[String(searchParameters.get(constants.parameterName.filter)) as FilterNames] ||
     constants.mediaType.all;
 
   const [results, setResults] = useState<SearchResultsType>();
@@ -49,7 +49,7 @@ const SearchResults: React.FC = () => {
       setResults(newResults);
     })();
   }, [query, filter]); // eslint-disable-line react-hooks/exhaustive-deps
-  // ESLint compains about fetch not being listed, but this is fine as it must be different,
+  // ESLint complains about fetchResults not being listed, but this is fine as it must be different,
   // but that should not re-run the useEffect callback, only query and filter changes should.
 
   if (hasError) {

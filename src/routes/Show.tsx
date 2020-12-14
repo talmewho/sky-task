@@ -10,7 +10,7 @@ import {fetcher} from '../service/the-movie-db';
 import './Show.css';
 
 const Show: React.FC = () => {
-  const {id} = useParams();
+  const {id} = useParams() as {id: string};
   const [show, setShow] = useState<Content>();
   const [hasError, setHasError] = useState<boolean>(false);
 

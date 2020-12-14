@@ -15,14 +15,14 @@ const Suggestions: React.FC<ISuggestionsProps> = ({data, selectedIndex}) => {
     return null;
   }
 
-  const hamdleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     (event.target as HTMLAnchorElement).blur();
   };
 
   const suggestions = data.map((item, index) => {
     const path = `/${item.type}/${item.id}`;
     const selected = selectedIndex === index ? 'selected' : undefined;
-    return (<Link key={path} to={path} className={selected} onClick={hamdleClick}>{item.name}</Link>)
+    return (<Link key={path} to={path} className={selected} onClick={handleClick}>{item.name}</Link>)
   });
 
   return (

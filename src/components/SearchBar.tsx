@@ -21,10 +21,10 @@ interface ISearchBarProps {
 
 const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
   const history = useHistory();
-  const searcParameters = useQuery();
-  const defaultQuery = searcParameters.get(constants.parameterName.query) || '';
+  const searchParameters = useQuery();
+  const defaultQuery = searchParameters.get(constants.parameterName.query) || '';
   const defaultFilter =
-    constants.mediaType[String(searcParameters.get(constants.parameterName.filter)) as FilterNames] ||
+    constants.mediaType[String(searchParameters.get(constants.parameterName.filter)) as FilterNames] ||
     constants.mediaType.all;
 
   const [query, setQuery] = useState<string>(defaultQuery);
