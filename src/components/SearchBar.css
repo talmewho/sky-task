@@ -20,7 +20,7 @@
   width: 10%;
   height: 3rem;
   border-radius: 20px;
-  background: url("/search.svg") left center no-repeat #20f;
+  background: url("search.svg") left center no-repeat #20f;
   padding-left: 2.5rem;
   border: 2px solid rgba(0, 0, 0, 0.5);
   font-size: 2.5rem;

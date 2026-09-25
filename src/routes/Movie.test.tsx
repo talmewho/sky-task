@@ -1,5 +1,5 @@
 import React from 'react';
-import renderer, {act} from 'react-test-renderer';
+import {render, act} from '@testing-library/react';
 
 import getMovie1Mock from './mocks/movie-1';
 
@@ -9,7 +9,7 @@ import Movie from './Movie';
 
 jest.mock('react-router-dom', () => {
     return {useParams: () => ({id: '1'}), Link: ({children, to}: {
-        children: React.ReactChildren,
+        children: React.ReactNode,
         to: string
     }) => <a href={to}>{children}</a>};
 });
@@ -31,28 +31,28 @@ describe('Components.Movie', () => {
     });
 
     it('shows a loading indicator before data is fetched', async () => {
-        const component = renderer.create(<Movie />);
+        const {container} = render(<Movie />);
         await waitForUpdate();
-        expect(component.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 
     it('data is fetched and shown', async () => {
         mockGetMovie.mockResolvedValueOnce(getMovie1Mock());
 
-        const component = renderer.create(<Movie />);
+        const {container} = render(<Movie />);
         await waitForUpdate();
 
         expect(mockGetMovie).toBeCalledTimes(1);
-        expect(component.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 
     it('data fetching throws, error is shown', async () => {
         mockGetMovie.mockRejectedValue(new Error(''));
 
-        const component = renderer.create(<Movie />);
+        const {container} = render(<Movie />);
         await waitForUpdate();
 
         expect(mockGetMovie).toBeCalledTimes(1);
-        expect(component.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 });

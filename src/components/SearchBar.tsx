@@ -34,7 +34,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({onSearch, shouldFocus}) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLInputElement>(null);
-  const timerRef = useRef<NodeJS.Timer | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (shouldFocus && inputRef.current) {

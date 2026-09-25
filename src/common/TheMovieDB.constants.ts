@@ -6,7 +6,7 @@ import {
 
 import {AllFilterName} from '../service/the-movie-db/types';
 
-export default {
+const constants = {
   mediaType: {
     tv: 'tv' as TheMovieDBShowEntityName,
     movie: 'movie' as TheMovieDBMovieEntityName,
@@ -38,3 +38,5 @@ export default {
     w185: 'w185'
   }
 };
+
+export default constants;
